@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 p-8">
+    <div class="container mx-auto">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h1 id="server-name" class="text-4xl font-bold mb-4 transition-opacity duration-500 opacity-0"></h1>
+            <div class="overflow-hidden rounded-lg shadow-md mb-4">
+                <img id="server-image" class="w-full h-64 object-cover transition-transform duration-500 transform scale-95 hover:scale-100" src="" alt="">
+            </div>
+            <p id="server-description" class="text-gray-400 mb-8 transition-opacity duration-500 opacity-0"></p>
+            <h2 class="text-3xl font-bold mb-4">Játékosok az elmúlt 24 órában</h2>
+            <canvas id="player-count-chart" class="mb-8"></canvas>
+            <a href="../index.html" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300">Vissza a szerverekhez</a>
+        </div>
+    </div>
+    <script src="/server-page/server-page.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeInElements = document.querySelectorAll('.transition-opacity');
+            fadeInElements.forEach(el => {
+                setTimeout(() => {
+                    el.classList.remove('opacity-0');
+                }, 500); // Adjust the timeout as needed
+            });
+        });
+    </script>
+</body>
+</html>
