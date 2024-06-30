@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Leaderboard.hu</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            animation: slideDown 0.3s ease-in-out;
+        }
+
+        .popup-success {
+            color: green;
+        }
+
+        .popup-error {
+            color: red;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .popup-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .popup-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .popup-buttons a:hover {
+            background: #4338ca;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen p-8">
+    <nav class="bg-gray-800 p-4 fixed w-full top-0">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold text-white">Leaderboard.hu</a>
+            <div class="space-x-4">
+                <a href="/" class="text-gray-200 hover:text-white">Szerverek</a>
+                <a href="/login" class="text-gray-200 hover:text-white">Bejelentkezés</a>
+                <a href="/register" class="text-gray-200 hover:text-white">Regisztráció</a>
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-md w-full bg-gray-800 p-6 rounded-lg shadow-lg mt-16">
+        <h1 class="text-3xl font-bold mb-8 text-center">Login</h1>
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-400">Username</label>
+                <input type="text" id="username" name="username" required
+                    class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-300">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-400">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-300">
+            </div>
+            <div>
+                <button type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="popup" class="popup">
+        <div id="popup-content" class="popup-content">
+            <button class="close-button" onclick="closePopup()">&times;</button>
+            <div id="popup-message"></div>
+            <div class="popup-buttons">
+                <a href="/dashboard">Vezérlőpult</a>
+                <a href="/">Szerverek</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(loginForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const message = await response.text();
+                if (response.ok) {
+                    showPopup('Success: ' + message, true);
+                } else {
+                    showPopup('Error: ' + message, false);
+                }
+            } catch (error) {
+                showPopup('Error: ' + error.message, false);
+            }
+        });
+
+        function showPopup(message, isSuccess) {
+            const popup = document.getElementById('popup');
+            const popupContent = document.getElementById('popup-content');
+            const popupMessage = document.getElementById('popup-message');
+
+            popupMessage.textContent = message;
+            popupContent.classList.toggle('popup-success', isSuccess);
+            popupContent.classList.toggle('popup-error', !isSuccess);
+            popup.style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
